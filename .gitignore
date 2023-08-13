@@ -1,0 +1,43 @@
+# Build directories and binary files
+/.cache
+/Notes/
+/build/
+/public/
+/install/
+/cmake-build-*/
+/conan-cache/
+/out/
+compile_commands.json
+/.luarc.json
+*.so
+
+# User spesific settings
+CMakeUserPresets.json
+
+# IDE files
+.vs/
+.idea/
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*~
+_ReSharper*
+*.log
+log/
+.dir-locals.el
+
+# OS Generated Files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.Trash-*
+$RECYCLE.BIN/
+.TemporaryItems
+ehthumbs.db
+Thumbs.db

@@ -1,0 +1,6 @@
+* Action items
+- [ ] Create documentation project.
+- [ ] Get NHorro code here.
+- [ ] Check interfaces and start documentation
+  - [ ] Formal documentation of the project.
+  - [ ] Personal documentation of things I found.

@@ -1,0 +1,88 @@
+variables:
+  VERBOSE: 1 # This be used when building the project.
+
+stages:
+  - Coverage # Generate coverage first
+  - Debug
+  - Release
+  - Deploy
+
+gcc_debug:
+  stage: Debug
+  script:
+    - just gcc-debug
+  artifacts:
+    reports:
+      junit: build/gcc-debug/gcc-junit.xml
+
+clang_debug:
+  stage: Debug
+  script:
+    - just clang-debug
+  artifacts:
+    reports:
+      junit: build/clang-debug/clang-junit.xml
+
+gcc_release:
+  stage: Release
+  script:
+    - just gcc-release
+
+clang_release:
+  stage: Release
+  script:
+    - just clang-release
+
+coverage:
+  stage: Coverage
+  script:
+    - just coverage
+  coverage: /^\s*lines:\s*\d+.\d+\%/
+  artifacts:
+    name: covarage_${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+    expire_in: 1 week
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: build/coverage.xml
+
+# pages:
+#   stage: Deploy
+#   script:
+#     - cmake --preset=doxy-doc
+#     - cmake --build build/doxy-doc --target doxygen-docs
+#     - mv build/doxy-doc/html public/
+#   artifacts:
+#     paths:
+#       - public
+#   only:
+#     - master
+#     - tags
+
+gcc-installable:
+  stage: Deploy
+  script:
+    - mkdir -p gcc-installable
+    - just gcc-installable
+    - cp build/gcc-release/Nemu-*.sh gcc-installable/
+    - cp build/gcc-release/Nemu-*.gz gcc-installable/
+  artifacts:
+    paths:
+      - gcc-installable
+  only:
+    - master
+    - tags
+
+clang-installable:
+  stage: Deploy
+  script:
+    - mkdir -p clang-installable
+    - just clang-installable
+    - cp build/clang-release/Nemu-*.sh clang-installable/
+    - cp build/clang-release/Nemu-*.gz clang-installable/
+  artifacts:
+    paths:
+      - clang-installable
+  only:
+    - master
+    - tags
