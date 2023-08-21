@@ -5,11 +5,7 @@ add_executable(
   Error.cpp
   InstructionEmitter.cpp
   InstructionFileWritter.cpp
-  SQLEmitter.cpp
-  SQLInsertEmitter.cpp
-  SQLQueryEmitter.cpp
-  SQLTableEmitter.cpp
-  sqlgen.cpp)
+  main.cpp)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE myproject::myproject_options myproject::myproject_warnings)
 

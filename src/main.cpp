@@ -16,7 +16,6 @@ namespace {
 enum ActionType {
   PrintRecords,
   PrintDetailedRecords,
-  EmitSQL,
   EmitInstructions,
 };
 }// end anonymous namespace
@@ -26,9 +25,8 @@ static cl::opt<ActionType> Action(cl::desc("Actions to perform"),
   cl::values(// Arg values
     clEnumValN(PrintRecords, "print-records", ""),
     clEnumValN(PrintDetailedRecords, "print-detailed-records", ""),
-    clEnumValN(EmitSQL, "emit-sql", ""),
     clEnumValN(EmitInstructions, "emit-instructions", "")),
-  cl::init(EmitSQL));
+  cl::init(PrintRecords));
 
 Error emitSQL(raw_ostream &os, RecordKeeper &records);
 Error emitInstructions(raw_ostream &os, RecordKeeper &records);
@@ -38,20 +36,6 @@ bool SQLGenMain(raw_ostream &os, RecordKeeper &records)
   switch (Action) {
   case PrintRecords:
     os << records;
-    break;
-  case EmitSQL:
-    if (auto E = emitSQL(os, records)) {
-      handleAllErrors(
-        std::move(E),
-        [](const SMLocError &e) {
-          llvm::PrintError(e.Loc.getPointer(), e.getMessage());
-        },
-        [](const ErrorInfoBase &e) {
-          e.log(WithColor::error());
-          errs() << "\n";
-        });
-      return true;
-    }
     break;
   case EmitInstructions:
     if (auto E = emitInstructions(os, records)) {
