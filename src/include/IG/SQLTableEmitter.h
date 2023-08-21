@@ -1,28 +1,28 @@
 #ifndef SQLGEN_SQLTABLEEMITTER_H
 #define SQLGEN_SQLTABLEEMITTER_H
-#include "llvm/ADT/ArrayRef.h"
-#include "llvm/ADT/Optional.h"
-#include "llvm/Support/Error.h"
-#include "llvm/TableGen/Record.h"
+#include <llvm/ADT/ArrayRef.h>
+#include <llvm/ADT/Optional.h>
+#include <llvm/Support/Error.h>
+#include <llvm/TableGen/Record.h>
 
 namespace llvm {
-class SQLTableEmitter {
+class SQLTableEmitter
+{
   raw_ostream &OS;
   // Map from a class (record) to its primary key member.
   DenseMap<const Record *, StringRef> PrimaryKeys;
 
 public:
-  explicit
-  SQLTableEmitter(raw_ostream &OS) : OS(OS) {}
+  explicit SQLTableEmitter(raw_ostream &os) : OS(os) {}
 
-  Error run(ArrayRef<const Record *> Classes);
+  Error run(ArrayRef<const Record *> classes);
 
-  Optional<StringRef> getPrimaryKey(const Record *ClassRecord) const {
-    auto I = PrimaryKeys.find(ClassRecord);
-    if (I != PrimaryKeys.end())
-      return I->second;
+  Optional<StringRef> getPrimaryKey(const Record *classRecord) const
+  {
+    auto I = PrimaryKeys.find(classRecord);
+    if (I != PrimaryKeys.end()) return I->second;
     return {};
   }
 };
-} // end namespace llvm
+}// end namespace llvm
 #endif

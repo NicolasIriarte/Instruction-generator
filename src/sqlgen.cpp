@@ -1,12 +1,14 @@
-#include "llvm/Support/CommandLine.h"
-#include "llvm/Support/Error.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/Support/WithColor.h"
-#include "llvm/TableGen/Error.h"
-#include "llvm/TableGen/Main.h"
-#include "llvm/TableGen/Record.h"
+#include <llvm/Support/CommandLine.h>
+#include <llvm/Support/Error.h>
+#include <llvm/Support/WithColor.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/TableGen/Error.h>
+#include <llvm/TableGen/Main.h>
+#include <llvm/TableGen/Record.h>
 
-#include "Error.h"
+#include "IG/Error.hpp"
+
+#include <iostream>
 
 using namespace llvm;
 
@@ -14,34 +16,52 @@ namespace {
 enum ActionType {
   PrintRecords,
   PrintDetailedRecords,
-  EmitSQL
+  EmitSQL,
+  EmitInstructions,
 };
-} // end anonymous namespace
+}// end anonymous namespace
 
-static cl::opt<ActionType>
-  Action(cl::desc("Actions to perform"),
-         cl::values(
-           clEnumValN(PrintRecords, "print-records", ""),
-           clEnumValN(PrintDetailedRecords, "print-detailed-records", ""),
-           clEnumValN(EmitSQL, "emit-sql", "")
-         ),
-         cl::init(EmitSQL));
+// NOLINTNEXTLINE
+static cl::opt<ActionType> Action(cl::desc("Actions to perform"),
+  cl::values(// Arg values
+    clEnumValN(PrintRecords, "print-records", ""),
+    clEnumValN(PrintDetailedRecords, "print-detailed-records", ""),
+    clEnumValN(EmitSQL, "emit-sql", ""),
+    clEnumValN(EmitInstructions, "emit-instructions", "")),
+  cl::init(EmitSQL));
 
-Error emitSQL(raw_ostream &OS, RecordKeeper &Records);
+Error emitSQL(raw_ostream &os, RecordKeeper &records);
+Error emitInstructions(raw_ostream &os, RecordKeeper &records);
 
-bool SQLGenMain(raw_ostream &OS, RecordKeeper &Records) {
+bool SQLGenMain(raw_ostream &os, RecordKeeper &records)
+{
   switch (Action) {
   case PrintRecords:
-    OS << Records;
+    os << records;
     break;
   case EmitSQL:
-    if (auto E = emitSQL(OS, Records)) {
-      handleAllErrors(std::move(E),
-        [](const SMLocError &E) {
-          llvm::PrintError(E.Loc.getPointer(), E.getMessage());
+    if (auto E = emitSQL(os, records)) {
+      handleAllErrors(
+        std::move(E),
+        [](const SMLocError &e) {
+          llvm::PrintError(e.Loc.getPointer(), e.getMessage());
         },
-        [](const ErrorInfoBase &E) {
-          E.log(WithColor::error());
+        [](const ErrorInfoBase &e) {
+          e.log(WithColor::error());
+          errs() << "\n";
+        });
+      return true;
+    }
+    break;
+  case EmitInstructions:
+    if (auto E = emitInstructions(os, records)) {
+      handleAllErrors(
+        std::move(E),
+        [](const SMLocError &e) {
+          llvm::PrintError(e.Loc.getPointer(), e.getMessage());
+        },
+        [](const ErrorInfoBase &e) {
+          e.log(WithColor::error());
           errs() << "\n";
         });
       return true;
@@ -54,7 +74,8 @@ bool SQLGenMain(raw_ostream &OS, RecordKeeper &Records) {
   return false;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
   cl::ParseCommandLineOptions(argc, argv);
-  return llvm::TableGenMain(argv[0], &SQLGenMain);
+  return llvm::TableGenMain(argv[0], &SQLGenMain);// NOLINT
 }

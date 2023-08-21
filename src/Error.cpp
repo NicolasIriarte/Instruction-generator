@@ -1,7 +1,6 @@
-#include "Error.h"
+#include "IG/Error.hpp"
 
-char llvm::SMLocError::ID = 0;
-
-llvm::Error llvm::createTGStringError(SMLoc Loc, const Twine &S) {
-  return make_error<SMLocError>(Loc, inconvertibleErrorCode(), S);
+llvm::Error llvm::createTGStringError(SMLoc loc, const Twine &s)
+{
+  return make_error<SMLocError>(loc, inconvertibleErrorCode(), s);
 }
