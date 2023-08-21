@@ -26,6 +26,7 @@ inline constexpr int PROJECT_VERSION_TWEAK { @PROJECT_VERSION_TWEAK@ };
 inline constexpr std::string_view GIT_SHA1 = "@GIT_SHA1@";
 inline constexpr std::string_view GIT_SHORT_SHA1 = "@GIT_SHORT_SHA1@";
 inline constexpr std::string_view GIT_REFSPEC = "@GIT_REFSPEC@";
+inline constexpr std::string_view AUTHOR = "Nicolas Iriarte <NicolasIriarte95@gmail.com>";
 
 }// namespace IG::CMake
 
