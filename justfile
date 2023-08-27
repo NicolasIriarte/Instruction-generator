@@ -164,3 +164,13 @@ clean:
     echo "Removing 'compile_commands.json' file."
     rm -rf compile_commands.json
     echo "Done."
+
+# Add the bootstrap remote repository as 'theme'.
+add-remote-public:
+    #!/bin/bash
+    git remote add public git@github.com:NicolasIriarte/Intruction-generator.git
+
+# Push to remote repository.
+publish:
+    #!/bin/bash
+    git push public main

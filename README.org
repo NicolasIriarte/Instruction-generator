@@ -1,0 +1,32 @@
+* Instruction generator
+
+** Introduction
+This repository is a utility for the development of my thesis. In other words, it is not the thesis project itself, but rather a utility that will evolve as my work requires. The goal of my thesis is to create an emulator for the Leon3 microprocessor, intended for satellite software development and simulators. To achieve this goal, it's necessary to program each instruction supported by the Leon3 CPU. The decision has been made to automatically generate the template for each instruction using the utility libraries provided by LLVM, specifically [[https://llvm.org/docs/TableGen/][table-gen]].
+
+This repository takes a part of the LLVM source code (files with the extension =.td=) as input and generates multiple =.hpp= format files for each of the supported instructions.
+
+** Usage
+Once [[file:Dependencies.cmake][dependencies are installed]] and the [[file:README_building.md][project is compiled]], it's necessary to have the LLVM source code locally. To do this, you can execute:
+
+#+begin_src bash
+  git clone https://github.com/llvm/llvm-project.git
+#+end_src
+
+Once cloned, you can use the program in the following way:
+
+#+begin_src bash
+  IG_PATH=/path/to/IntructionGenerator
+  LLVM_PATH=/path/to/cloned/llvm
+
+  $IG_PATH/IntructionGenerator \
+      -I$LLVM_PATH/llvm/include \
+      -I$LLVM_PATH/llvm/lib/Target/Sparc \
+      --emit-instructions $LLVM_PATH/llvm/lib/Target/Sparc/Sparc.td
+#+end_src
+
+You can also execute the command =--help= to get help.
+
+** More Details
+- [[file:Dependencies.cmake][Dependency Setup]]
+- [[file:README_building.md][Building Details]]
+

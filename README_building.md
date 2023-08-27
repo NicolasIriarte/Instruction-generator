@@ -46,40 +46,6 @@ CMake uses the environment variables CC and CXX to decide which compiler to use.
 
 		Save and close the file.
 
-- Windows:
-
-	- Permanent:
-
-		Run one of the followings in PowerShell:
-
-		- Visual Studio generator and compiler (cl)
-
-				[Environment]::SetEnvironmentVariable("CC", "cl.exe", "User")
-				[Environment]::SetEnvironmentVariable("CXX", "cl.exe", "User")
-				refreshenv
-
-		  Set the architecture using [vcvarsall](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=vs-2019#vcvarsall-syntax):
-
-				vcvarsall.bat x64
-
-		- clang
-
-				[Environment]::SetEnvironmentVariable("CC", "clang.exe", "User")
-				[Environment]::SetEnvironmentVariable("CXX", "clang++.exe", "User")
-				refreshenv
-
-		- gcc
-
-				[Environment]::SetEnvironmentVariable("CC", "gcc.exe", "User")
-				[Environment]::SetEnvironmentVariable("CXX", "g++.exe", "User")
-				refreshenv
-
-
-  - Temporarily (only for the current shell):
-
-			$Env:CC="clang.exe"
-			$Env:CXX="clang++.exe"
-
 </details>
 
 ### (2) Configure your build
@@ -125,45 +91,6 @@ In cmake-gui, from the upper menu select `Tools/Configure`.
 
 **Warning**: if you have set `CC` and `CXX` always choose the `use default native compilers` option. This picks `CC` and `CXX`. Don't change the compiler at this stage!
 
-<details>
-<summary>Windows - MinGW Makefiles</summary>
-
-Choose MinGW Makefiles as the generator:
-
-<img src="https://user-images.githubusercontent.com/16418197/82769479-616ade80-9dfa-11ea-899e-3a8c31d43032.png" alt="mingw">
-
-</details>
-
-<details>
-<summary>Windows - Visual Studio generator and compiler</summary>
-
-You should have already set `C` and `CXX` to `cl.exe`.
-
-Choose "Visual Studio 16 2019" as the generator:
-
-<img src="https://user-images.githubusercontent.com/16418197/82524696-32502680-9af5-11ea-9697-a42000e900a6.jpg" alt="default_vs">
-
-</details>
-
-<details>
-
-<summary>Windows - Visual Studio generator and Clang Compiler</summary>
-
-You should have already set `C` and `CXX` to `clang.exe` and `clang++.exe`.
-
-Choose "Visual Studio 16 2019" as the generator. To tell Visual studio to use `clang-cl.exe`:
-- If you use the LLVM that is shipped with Visual Studio: write `ClangCl` under "optional toolset to use".
-
-<img src="https://user-images.githubusercontent.com/16418197/82781142-ae60ac00-9e1e-11ea-8c77-222b005a8f7e.png" alt="visual_studio">
-
-- If you use an external LLVM: write [`LLVM_v142`](https://github.com/zufuliu/llvm-utils#llvm-for-visual-studio-2017-and-2019)
- under "optional toolset to use".
-
-<img src="https://user-images.githubusercontent.com/16418197/82769558-b3136900-9dfa-11ea-9f73-02ab8f9b0ca4.png" alt="visual_studio">
-
-</details>
-<br/>
-
 2.c.4) Choose the Cmake options and then generate:
 
 ![generate](https://user-images.githubusercontent.com/16418197/82781591-c97feb80-9e1f-11ea-86c8-f2748b96f516.png)
@@ -172,21 +99,5 @@ Choose "Visual Studio 16 2019" as the generator. To tell Visual studio to use `c
 Once you have selected all the options you would like to use, you can build the
 project (all targets):
 
-    cmake --build ./build
-
-For Visual Studio, give the build configuration (Release, RelWithDeb, Debug, etc) like the following:
-
-    cmake --build ./build -- /p:configuration=Release
-
-
-### Running the tests
-
-You can use the `ctest` command run the tests.
-
-```shell
-cd ./build
-ctest -C Debug
-cd ../
-```
-
+    just gcc-debug
 
