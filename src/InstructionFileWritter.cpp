@@ -15,6 +15,7 @@
 #include <cstddef>
 #include <filesystem>
 #include <format>
+#include <functional>
 #include <iterator>
 #include <sstream>
 #include <string_view>
@@ -81,19 +82,6 @@ std::string_view Date() noexcept
 
 namespace IG {
 
-std::string InstructionFileWritter::Heading() const
-{
-  static constexpr std::string_view HEADING{
-    "/**\n"
-    " * @file   {}\n"
-    " * @author {}\n"
-    " * @date   {}\n"
-    " */\n"
-  };
-
-  return std::format(HEADING, name_ + '.' + extension_, CMake::AUTHOR, Date());
-}
-
 std::string InstructionFileWritter::HeaderGuardOpen() const
 {
   std::string guard_filename_str;
@@ -113,35 +101,13 @@ std::string InstructionFileWritter::HeaderGuardOpen() const
   return guard_filename_str;
 }
 
-std::string InstructionFileWritter::HeaderGuardClose() const
-{
-  std::string guard_filename_str;
-
-  std::transform(name_.begin(),
-    name_.end(),
-    std::back_inserter(guard_filename_str),
-    ::toupper);
-
-  guard_filename_str.append("_");
-
-  std::transform(extension_.begin(),
-    extension_.end(),
-    std::back_inserter(guard_filename_str),
-    ::toupper);
-
-
-  static constexpr std::string_view TEXT{ "#endif /* {} */" };
-
-  return std::format(TEXT, guard_filename_str);
-}
-
 void InstructionFileWritter::Emit() const
 {
   std::filesystem::path file_path =
     output_ / std::string{ name_ + '.' + extension_ };
 
   if (!std::filesystem::exists(output_)) {
-    throw std::runtime_error("Output directory doesn't exists.");
+    std::filesystem::create_directory(output_);
   }
 
   // if (std::filesystem::exists(file_path)) {
@@ -172,6 +138,7 @@ namespace Sparc {{
 struct {0} {{
   static constexpr std::string_view NAME{{ "{0}" }};
   static constexpr std::string_view ASM{{ "{5}" }};
+  static constexpr std::byte OPT_TYPE{{ {7} }};
   static constexpr std::byte OPCODE{{ {6} }};
 
 
@@ -198,7 +165,20 @@ struct {0} {{
     Date(),
     HeaderGuardOpen(),
     asm_,
-    static_cast<uint8_t>(opcode_));
+    static_cast<uint32_t>(opcode_.value),
+    std::invoke([&]() {
+      auto type = opcode_.type;
+      switch (type) {
+      case Opcode::Type::Opt3:
+        return 3;
+      case Opcode::Type::Opt2:
+        return 2;
+      case Opcode::Type::INVALID:
+        return 0;
+        break;
+      }
+      return -1;
+    }));
 }
 
 

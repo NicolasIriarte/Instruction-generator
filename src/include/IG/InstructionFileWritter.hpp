@@ -19,6 +19,17 @@
 
 namespace IG {
 
+struct Opcode
+{
+  enum class Type {
+    Opt3,
+    Opt2,
+    INVALID,
+  };
+
+  Type type;
+  std::byte value;
+};
 
 class InstructionFileWritter
 {
@@ -29,18 +40,15 @@ public:
 
   void Emit() const;
 
-  void SetOpcode(uint8_t op3) { opcode_ = static_cast<std::byte>(op3); }
+  void SetOpcode(Opcode opcode) { opcode_ = opcode; }
 
 private:
-  [[nodiscard]] std::string Heading() const;
-
   [[nodiscard]] std::string HeaderGuardOpen() const;
-  [[nodiscard]] std::string HeaderGuardClose() const;
 
   std::string name_;
   std::string asm_;
 
-  std::byte opcode_{};
+  Opcode opcode_{};
 
   std::filesystem::path output_{ "/tmp/Leon3" };
   std::string extension_{ "hpp" };
