@@ -101,7 +101,7 @@ void InstructionFileWritter::Emit() const
 #include <cstddef>
 #include <string_view>
 
-namespace Sparc {{
+namespace Nemu::Leon3 {{
 
 struct {0} {{
   static constexpr std::string_view NAME{{ "{0}" }};
@@ -109,9 +109,7 @@ struct {0} {{
   static constexpr std::byte OPT_TYPE{{ {7} }};
   static constexpr std::byte OPCODE{{ {6} }};
 
-
-  static constexpr void Exec() noexcept
-  {{
+  static constexpr void Exec() noexcept {{
     // 1. Deduced variables for instruction:
 {8}
 
@@ -125,21 +123,30 @@ struct {0} {{
 
 }};
 
-}} // namespace Sparc
+}} // namespace Nemu::Leon3
 
 #endif /* {4} */
+
+/*
+
+;; TagleGen code of this source file, generated on {3}.
+
+{9}
+
+*/
+
 )"
   };
 
   file << std::format(TEXT,
-    name_,
-    extension_,
-    CMake::AUTHOR,
-    Date(),
-    HeaderGuardOpen(),
-    asm_,
-    static_cast<uint32_t>(opcode_.value),
-    std::invoke([&]() {
+    name_,// 0
+    extension_,// 1
+    CMake::AUTHOR,// 2
+    Date(),// 3
+    HeaderGuardOpen(),// 4
+    asm_,// 5
+    static_cast<uint32_t>(opcode_.value),// 6
+    std::invoke([&]() {// 7
       auto type = opcode_.type;
       switch (type) {
       case Opcode::Type::Opt3:
@@ -152,7 +159,10 @@ struct {0} {{
       }
       return -1;
     }),
-    instruction_variables_);
+    instruction_variables_,// 8
+    tablegen_code_// 9
+
+  );
 }
 
 

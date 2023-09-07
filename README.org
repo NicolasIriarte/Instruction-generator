@@ -24,6 +24,22 @@ Once cloned, you can use the program in the following way:
       --emit-instructions $LLVM_PATH/llvm/lib/Target/Sparc/Sparc.td
 #+end_src
 
+
+For example:
+#+begin_src bash
+  IG_PATH=~/Gits/leon3/intruction-generator/build/gcc-debug/src
+  LLVM_PATH=~/Gits/llvm-project
+
+  $IG_PATH/IntructionGenerator \
+      -I$LLVM_PATH/llvm/include \
+      -I$LLVM_PATH/llvm/lib/Target/Sparc \
+      --emit-instructions $LLVM_PATH/llvm/lib/Target/Sparc/Sparc.td
+#+end_src
+
+#+RESULTS:
+: Emitted 522 instructions
+
+
 You can also execute the command =--help= to get help.
 
 ** More Details

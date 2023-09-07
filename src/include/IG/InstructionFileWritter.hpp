@@ -47,6 +47,12 @@ public:
     instruction_variables_ = std::move(variablesAsString);
   }
 
+
+  void AddTablegenCode(std::string record)
+  {
+    tablegen_code_ = std::move(record);
+  }
+
 private:
   [[nodiscard]] std::string HeaderGuardOpen() const;
 
@@ -56,6 +62,7 @@ private:
   Opcode opcode_{};
 
   std::string instruction_variables_;
+  std::string tablegen_code_;
 
   std::filesystem::path output_{ "/tmp/Leon3" };
   std::string extension_{ "hpp" };

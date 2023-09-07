@@ -1,6 +1,7 @@
 #include "IG/Instruction.hpp"
 #include "IG/InstructionFileWritter.hpp"
 #include <llvm/ADT/SmallVector.h>
+#include <llvm/ADT/StringExtras.h>
 #include <llvm/Support/Error.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/TableGen/Record.h>
@@ -57,25 +58,37 @@ IG::Opcode GetOpcode(const std::unique_ptr<llvm::Record> &record)
   return { IG::Opcode::Type::INVALID, {} };
 }
 
+std::string LLVMToString(const auto &element)
+{
+  std::string record_as_string;
+  raw_string_ostream string_ostream(record_as_string);
+  string_ostream << element;
+  return record_as_string;
+}
 
 Error EmitAllInstructions(raw_ostream &os, RecordKeeper &records)
 {
   uint32_t num_instructions = 0;
   for (const auto &[name, record] : records.getDefs()) {
-    if (IsAsmInstruction(record)) {
-      IG::InstructionFileWritter instruction(
-        name, record->getValueAsString("AsmString").str());
+    if (!IsAsmInstruction(record)) { continue; }
 
-      instruction.SetOpcode(GetOpcode(record));
 
-      IG::Instruction variables(record->getValueAsBitsInit("Inst"));
+    IG::InstructionFileWritter instruction(
+      name, record->getValueAsString("AsmString").str());
 
-      instruction.AddVariables(static_cast<std::string>(variables));
+    instruction.SetOpcode(GetOpcode(record));
 
-      instruction.Emit();
+    IG::Instruction variables(record->getValueAsBitsInit("Inst"));
 
-      ++num_instructions;
-    }
+    instruction.AddVariables(static_cast<std::string>(variables));
+
+    std::string record_as_string = LLVMToString(*record);
+
+    instruction.AddTablegenCode(record_as_string);
+
+    instruction.Emit();
+
+    ++num_instructions;
   }
 
   os << "Emitted " << num_instructions << " instructions\n";
