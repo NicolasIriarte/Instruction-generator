@@ -1,3 +1,4 @@
+#include "IG/Instruction.hpp"
 #include "IG/InstructionFileWritter.hpp"
 #include <llvm/ADT/SmallVector.h>
 #include <llvm/Support/Error.h>
@@ -6,6 +7,7 @@
 
 #include <bitset>
 #include <cstdint>
+#include <iostream>
 #include <string_view>
 
 
@@ -56,7 +58,7 @@ IG::Opcode GetOpcode(const std::unique_ptr<llvm::Record> &record)
 }
 
 
-Error emitInstructions(raw_ostream &os, RecordKeeper &records)
+Error EmitAllInstructions(raw_ostream &os, RecordKeeper &records)
 {
   uint32_t num_instructions = 0;
   for (const auto &[name, record] : records.getDefs()) {
@@ -65,6 +67,10 @@ Error emitInstructions(raw_ostream &os, RecordKeeper &records)
         name, record->getValueAsString("AsmString").str());
 
       instruction.SetOpcode(GetOpcode(record));
+
+      IG::Instruction variables(record->getValueAsBitsInit("Inst"));
+
+      instruction.AddVariables(static_cast<std::string>(variables));
 
       instruction.Emit();
 

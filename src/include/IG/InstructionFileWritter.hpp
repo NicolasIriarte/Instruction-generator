@@ -42,6 +42,11 @@ public:
 
   void SetOpcode(Opcode opcode) { opcode_ = opcode; }
 
+  void AddVariables(std::string variablesAsString)
+  {
+    instruction_variables_ = std::move(variablesAsString);
+  }
+
 private:
   [[nodiscard]] std::string HeaderGuardOpen() const;
 
@@ -49,6 +54,8 @@ private:
   std::string asm_;
 
   Opcode opcode_{};
+
+  std::string instruction_variables_;
 
   std::filesystem::path output_{ "/tmp/Leon3" };
   std::string extension_{ "hpp" };

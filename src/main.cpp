@@ -29,7 +29,7 @@ static cl::opt<ActionType> Action(cl::desc("Actions to perform"),
   cl::init(PrintRecords));
 
 Error emitSQL(raw_ostream &os, RecordKeeper &records);
-Error emitInstructions(raw_ostream &os, RecordKeeper &records);
+Error EmitAllInstructions(raw_ostream &os, RecordKeeper &records);
 
 bool SQLGenMain(raw_ostream &os, RecordKeeper &records)
 {
@@ -38,7 +38,7 @@ bool SQLGenMain(raw_ostream &os, RecordKeeper &records)
     os << records;
     break;
   case EmitInstructions:
-    if (auto E = emitInstructions(os, records)) {
+    if (auto E = EmitAllInstructions(os, records)) {
       handleAllErrors(
         std::move(E),
         [](const SMLocError &e) {

@@ -46,38 +46,6 @@ std::string_view Date() noexcept
   return date;
 }
 
-// constexpr std::string_view IncludeHeaders() noexcept
-// {
-//   return "#include <string_view>\n"
-//          "#include <cstddef>\n";
-// }
-
-// constexpr std::string_view Ident(int n) noexcept
-// {
-//   constexpr std::string_view spaces{
-//     "                                                  "
-//   };
-
-//   return { spaces.begin(), spaces.begin() + static_cast<ptrdiff_t>(n * 2) };
-// }
-
-// std::string ConstexprStringViewVariable(std::string_view name,
-//   std::string_view value)
-// {
-//   static constexpr std::string_view TEXT{
-//     "static constexpr std::string_view {}{{\"{}\"}};"
-//   };
-//   return std::format(TEXT, name, value);
-// }
-
-// std::string ConstexprByteVariable(std::string_view name, std::byte value)
-// {
-//   static constexpr std::string_view TEXT{
-//     "static constexpr std::byte {}{{ {} }};"
-//   };
-//   return std::format(TEXT, name, static_cast<uint8_t>(value));
-// }
-
 }// namespace
 
 namespace IG {
@@ -144,6 +112,11 @@ struct {0} {{
 
   static constexpr void Exec() noexcept
   {{
+    // 1. Deduced variables for instruction:
+{8}
+
+    // 2. Operations
+
     if constexpr (debug_mode) {{
       std::cout << "DEBUG: name {0}" << std::endl;
     }}
@@ -178,7 +151,8 @@ struct {0} {{
         break;
       }
       return -1;
-    }));
+    }),
+    instruction_variables_);
 }
 
 

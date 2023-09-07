@@ -3,6 +3,7 @@ find_package(LLVM REQUIRED CONFIG)
 add_executable(
   ${PROJECT_NAME}
   Error.cpp
+  Instruction.cpp
   InstructionEmitter.cpp
   InstructionFileWritter.cpp
   main.cpp)
